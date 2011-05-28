@@ -11,45 +11,59 @@ import org.bukkit.World;
 public class Backup {
 
 	public SimpleSave plugin;
-	public Backup(SimpleSave instance){
+
+	public Backup(SimpleSave instance) {
 		plugin = instance;
 	}
 
 	public void backup() {
 		String[] worldfilter = plugin.ConfigArray[19].split(",");
-		try {
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-					plugin.setY(true);
-					plugin.saveWorlds();
-				}
-			});
-			for (World world : plugin.getServer().getWorlds()) {
-				if(Arrays.asList(worldfilter).contains(world.getName())) {
-					continue;
-				}
+
+		plugin.getServer().getScheduler()
+				.scheduleSyncDelayedTask(plugin, new Runnable() {
+					@Override
+					public void run() {
+						plugin.setY(true);
+						plugin.saveWorlds();
+					}
+				});
+		for (World world : plugin.getServer().getWorlds()) {
+			if (Arrays.asList(worldfilter).contains(world.getName())) {
+				continue;
+			}
+			try {
 				String FILE_SEPARATOR = "/";
-				String backupDir = plugin.ConfigArray[16].concat(FILE_SEPARATOR).concat(world.getName());
-				FileUtils.copyDirectory(new File(world.getName()), new File(backupDir));
+				String backupDir = plugin.ConfigArray[16]
+						.concat(FILE_SEPARATOR).concat(world.getName());
+				FileUtils.copyDirectory(new File(world.getName()), new File(
+						backupDir));
 				String targetName = world.getName();
-				String targetDir = plugin.ConfigArray[16].concat(FILE_SEPARATOR);
+				String targetDir = plugin.ConfigArray[16]
+						.concat(FILE_SEPARATOR);
 				targetName = world.getName();
-				FileUtils.zipDirectory(world.getName(), targetDir.concat(targetName).concat(getDate()));
+				FileUtils.zipDirectory(world.getName(),
+						targetDir.concat(targetName).concat(getDate()));
 				FileUtils.deleteDirectory(new File(backupDir));
+			} catch (Exception e) {
+				plugin.log.severe("SimpleSave: Error when copying files!");
+				plugin.log
+						.severe("SimpleSave: This means a plugin you have is not acting nice, or isn't threadsafe");
+				plugin.log
+						.severe("SimpleSave: Go to my thread and post the following information");
+				System.out.println(e.getMessage() + e.getCause());
+				e.printStackTrace();
 			}
 		}
-		catch (Exception e) {
-			e.printStackTrace(System.out);
-		}
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				if(!plugin.ConfigArray[17].equals("true")) {
-					plugin.setY(false);
-				}
-			}
-		});
+
+		plugin.getServer().getScheduler()
+				.scheduleSyncDelayedTask(plugin, new Runnable() {
+					@Override
+					public void run() {
+						if (!plugin.ConfigArray[17].equals("true")) {
+							plugin.setY(false);
+						}
+					}
+				});
 
 		deleteOldBackups();
 	}
@@ -60,7 +74,7 @@ public class Backup {
 		return sdf.format(cal.getTime());
 	}
 
-	private void deleteOldBackups () {
+	private void deleteOldBackups() {
 		try {
 			//
 			File backupDir = new File(plugin.ConfigArray[16]);
@@ -73,10 +87,10 @@ public class Backup {
 				backups.addAll(Arrays.asList(tempArray));
 				int maxModifiedIndex;
 				long maxModified;
-				for(int i = 0 ; i < Integer.parseInt(plugin.ConfigArray[13]) ; ++i) {
+				for (int i = 0; i < Integer.parseInt(plugin.ConfigArray[13]); ++i) {
 					maxModifiedIndex = 0;
 					maxModified = backups.get(0).lastModified();
-					for(int j = 1 ; j < backups.size(); ++j) {
+					for (int j = 1; j < backups.size(); ++j) {
 						File currentFile = backups.get(j);
 						if (currentFile.lastModified() > maxModified) {
 							maxModified = currentFile.lastModified();
@@ -86,11 +100,10 @@ public class Backup {
 					backups.remove(maxModifiedIndex);
 				}
 
-				for(File backupToDelete : backups)
+				for (File backupToDelete : backups)
 					backupToDelete.delete();
 			}
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace(System.out);
 		}
 	}

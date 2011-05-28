@@ -16,6 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
@@ -65,8 +66,8 @@ public class SimpleSave extends JavaPlugin {
 			ConfigArray = FixConfig();
 
 		}
-		log.info("SimpleSave: 3.07 Initialized");
-		log.warning("SimpleSave: 3.07 is a beta version.");
+		log.info("SimpleSave: 3.08 Initialized");
+		log.warning("SimpleSave: 3.08 is a beta version.");
 		if (ConfigArray[17].equals("true")) {
 			setY(true);
 		}
@@ -149,19 +150,26 @@ public class SimpleSave extends JavaPlugin {
 
 	// Fixes the new setting for worldserver boolean
 	public void setY(Boolean b) {
-		for (Field f : WorldServer.class.getFields()) {
-			if (f.getType().getName().equals("boolean")
-					&& !f.getName().equals("weirdIsOpCache")) {
-				try {
-					f.setBoolean(WorldServer.class, b);
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
+		for (int i = 0; i < ((CraftServer) getServer()).getHandle().server.worlds
+				.size(); i++) {
+			WorldServer ws = ((CraftServer) getServer()).getHandle().server.worlds
+					.get(i);
+			for (Field f : ws.getClass().getDeclaredFields()) {
+				if (f.getType().getName().equals("boolean")
+						&& !f.getName().equals("weirdIsOpCache")) {
+					try {
+						log.info("SimpleSave: If you get huge errors after this, post this data: "
+								+ f.getName());
+						f.setBoolean(ws, b);
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-		}
 
+		}
 	}
 
 	public void saveWorlds() {
