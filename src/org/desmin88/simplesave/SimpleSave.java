@@ -60,14 +60,19 @@ public class SimpleSave extends JavaPlugin {
 				ConfigArray = FixConfig();
 			}
 		}
+		for (Object o : ConfigArray) {
+			if (o == "") {
+				log.info("SimpleSave: Parts of config file are blank, but not null. Possible errors might happen.");
+
+			}
+		}
 		if (!ConfigArray[12].equals(version)) {
 			log.warning("SimpleSave: Running version below " + version
 					+ ", the config file is outdated. Regenerating");
 			ConfigArray = FixConfig();
 
 		}
-		log.info("SimpleSave: 3.08 Initialized");
-		log.warning("SimpleSave: 3.08 is a beta version.");
+		log.info("SimpleSave: 3.1 Initialized");
 		if (ConfigArray[17].equals("true")) {
 			setY(true);
 		}
@@ -151,15 +156,13 @@ public class SimpleSave extends JavaPlugin {
 	// Fixes the new setting for worldserver boolean
 	public void setY(Boolean b) {
 		for (int i = 0; i < ((CraftServer) getServer()).getHandle().server.worlds
-				.size(); i++) {
+		.size(); i++) {
 			WorldServer ws = ((CraftServer) getServer()).getHandle().server.worlds
-					.get(i);
+			.get(i);
 			for (Field f : ws.getClass().getDeclaredFields()) {
 				if (f.getType().getName().equals("boolean")
 						&& !f.getName().equals("weirdIsOpCache")) {
 					try {
-						log.info("SimpleSave: If you get huge errors after this, post this data: "
-								+ f.getName());
 						f.setBoolean(ws, b);
 					} catch (IllegalArgumentException e) {
 						e.printStackTrace();
@@ -188,9 +191,9 @@ public class SimpleSave extends JavaPlugin {
 		@Override
 		public boolean isLoggable(LogRecord record) {
 			return !record.getMessage().equals(LS1)
-					& !record.getMessage().equals(LS2)
-					& !record.getMessage().equals(LS3)
-					& !record.getMessage().equals(LS4);
+			& !record.getMessage().equals(LS2)
+			& !record.getMessage().equals(LS3)
+			& !record.getMessage().equals(LS4);
 
 		}
 
@@ -205,35 +208,35 @@ public class SimpleSave extends JavaPlugin {
 			configfile.createNewFile();
 			Properties simplesaveproperties = new Properties();
 			simplesaveproperties.load(new FileInputStream(
-					"plugins/SimpleSave/config.properties"));
+			"plugins/SimpleSave/config.properties"));
 			simplesaveproperties.setProperty("save.use", "true");
 			simplesaveproperties.setProperty("save.interval", "10");
 			simplesaveproperties.setProperty("save.message.starting",
-					"[SimpleSave] Beginning world save");
+			"[SimpleSave] Beginning world save");
 			simplesaveproperties.setProperty("save.message.ending",
-					"[SimpleSave] Ending world save");
+			"[SimpleSave] Ending world save");
 			simplesaveproperties.setProperty("save.message.send", "true");
 			simplesaveproperties.setProperty("save.message.color", "RED");
 			simplesaveproperties.setProperty("backup.use", "true");
 			simplesaveproperties.setProperty("backup.interval", "60");
 			simplesaveproperties.setProperty("backup.message.starting",
-					"[SimpleSave] Beginning world backup");
+			"[SimpleSave] Beginning world backup");
 			simplesaveproperties.setProperty("backup.message.ending",
-					"[SimpleSave] Ending world backup");
+			"[SimpleSave] Ending world backup");
 			simplesaveproperties.setProperty("backup.message.send", "true");
 			simplesaveproperties.setProperty("backup.message.color", "RED");
 			simplesaveproperties.setProperty("backup.history.length", "5");
 			simplesaveproperties.setProperty("backup.directory", "backup");
 			simplesaveproperties.setProperty("plugin.send.saveoff-on", "true");
-			simplesaveproperties.setProperty("plugin.version", "3.03");
+			simplesaveproperties.setProperty("plugin.version", "3.1");
 			simplesaveproperties.setProperty("backup.date.format",
-					"yyyy-MM-dd hh-mm-ss");
+			"yyyy-MM-dd hh-mm-ss");
 			simplesaveproperties.setProperty("backup.world.filter", "");
 			simplesaveproperties
-					.setProperty("plugin.ignore.noplayers", "false");
+			.setProperty("plugin.ignore.noplayers", "false");
 			simplesaveproperties.store(out = new FileOutputStream(
-					"plugins/SimpleSave/config.properties"),
-					"SimpleSave Config File ");
+			"plugins/SimpleSave/config.properties"),
+			"SimpleSave Config File ");
 			out.close();
 		}
 	}
@@ -241,40 +244,40 @@ public class SimpleSave extends JavaPlugin {
 	public String[] ReadConfig() throws IOException {
 		Properties simplesaveproperties = new Properties();
 		FileInputStream in = new FileInputStream(
-				"plugins/SimpleSave/config.properties");
+		"plugins/SimpleSave/config.properties");
 		simplesaveproperties.load(in);
 		ConfigArray[0] = simplesaveproperties.getProperty("save.use");
 		ConfigArray[1] = simplesaveproperties.getProperty("save.interval");
 		ConfigArray[2] = simplesaveproperties
-				.getProperty("save.message.starting");
+		.getProperty("save.message.starting");
 		ConfigArray[3] = simplesaveproperties
-				.getProperty("save.message.ending");
+		.getProperty("save.message.ending");
 		ConfigArray[4] = simplesaveproperties.getProperty("save.message.send");
 		ConfigArray[5] = simplesaveproperties.getProperty("save.message.color");
 		ConfigArray[6] = simplesaveproperties.getProperty("backup.use");
 		ConfigArray[7] = simplesaveproperties.getProperty("backup.interval");
 		ConfigArray[8] = simplesaveproperties
-				.getProperty("backup.message.starting");
+		.getProperty("backup.message.starting");
 		ConfigArray[9] = simplesaveproperties
-				.getProperty("backup.message.ending");
+		.getProperty("backup.message.ending");
 		ConfigArray[10] = simplesaveproperties
-				.getProperty("backup.message.send");
+		.getProperty("backup.message.send");
 		ConfigArray[11] = simplesaveproperties
-				.getProperty("backup.message.color");
+		.getProperty("backup.message.color");
 		ConfigArray[12] = simplesaveproperties.getProperty("plugin.version");
 		ConfigArray[13] = simplesaveproperties
-				.getProperty("backup.history.length");
+		.getProperty("backup.history.length");
 		ConfigArray[14] = "";
 		ConfigArray[15] = "";
 		ConfigArray[16] = simplesaveproperties.getProperty("backup.directory");
 		ConfigArray[17] = simplesaveproperties
-				.getProperty("plugin.send.saveoff-on");
+		.getProperty("plugin.send.saveoff-on");
 		ConfigArray[18] = simplesaveproperties
-				.getProperty("backup.date.format");
+		.getProperty("backup.date.format");
 		ConfigArray[19] = simplesaveproperties
-				.getProperty("backup.world.filter");
+		.getProperty("backup.world.filter");
 		ConfigArray[20] = simplesaveproperties
-				.getProperty("plugin.ignore.noplayers");
+		.getProperty("plugin.ignore.noplayers");
 		in.close();
 		return ConfigArray;
 	}

@@ -13,22 +13,14 @@ public class SSplayerListener extends PlayerListener{
 		plugin = instance;
 		if(playercount > 0) {
 			this.players = playercount;
+			Run();
 		}
 	}
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		players++;
 		if(players == 1) {
-			if(plugin.ConfigArray[0].equals("true")){
-				long saveinterval = java.lang.Integer.parseInt(plugin.ConfigArray[1].replaceAll("\\D", "")) * 1200;
-				plugin.ScheduleSave(saveinterval);
-				plugin.log.info("SimpleSave: Current save interval is " + plugin.ConfigArray[1] + " minute(s)");
-			}
-			if(plugin.ConfigArray[6].equals("true")){
-				long saveinterval = java.lang.Integer.parseInt(plugin.ConfigArray[7].replaceAll("\\D", "")) * 1200;
-				plugin.ScheduleBackup(saveinterval);
-				plugin.log.info("SimpleSave: Current backup interval is " + plugin.ConfigArray[7] + " minute(s)");
-			}
+			Run();
 		}
 	}
 
@@ -53,5 +45,18 @@ public class SSplayerListener extends PlayerListener{
 
 		}
 	}
+	public void Run() {
+		if(plugin.ConfigArray[0].equals("true")){
+			long saveinterval = java.lang.Integer.parseInt(plugin.ConfigArray[1].replaceAll("\\D", "")) * 1200;
+			plugin.ScheduleSave(saveinterval);
+			plugin.log.info("SimpleSave: Current save interval is " + plugin.ConfigArray[1] + " minute(s)");
+		}
+		if(plugin.ConfigArray[6].equals("true")){
+			long saveinterval = java.lang.Integer.parseInt(plugin.ConfigArray[7].replaceAll("\\D", "")) * 1200;
+			plugin.ScheduleBackup(saveinterval);
+			plugin.log.info("SimpleSave: Current backup interval is " + plugin.ConfigArray[7] + " minute(s)");
+		}
+	}
+
 }
 

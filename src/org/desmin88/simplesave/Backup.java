@@ -1,10 +1,12 @@
 package org.desmin88.simplesave;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.concurrent.locks.*;
 
 import org.bukkit.World;
 
@@ -20,13 +22,13 @@ public class Backup {
 		String[] worldfilter = plugin.ConfigArray[19].split(",");
 
 		plugin.getServer().getScheduler()
-				.scheduleSyncDelayedTask(plugin, new Runnable() {
-					@Override
-					public void run() {
-						plugin.setY(true);
-						plugin.saveWorlds();
-					}
-				});
+		.scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				plugin.setY(true);
+				plugin.saveWorlds();
+			}
+		});
 		for (World world : plugin.getServer().getWorlds()) {
 			if (Arrays.asList(worldfilter).contains(world.getName())) {
 				continue;
@@ -34,36 +36,37 @@ public class Backup {
 			try {
 				String FILE_SEPARATOR = "/";
 				String backupDir = plugin.ConfigArray[16]
-						.concat(FILE_SEPARATOR).concat(world.getName());
+				                                      .concat(FILE_SEPARATOR).concat(world.getName());
 				FileUtils.copyDirectory(new File(world.getName()), new File(
 						backupDir));
 				String targetName = world.getName();
 				String targetDir = plugin.ConfigArray[16]
-						.concat(FILE_SEPARATOR);
+				                                      .concat(FILE_SEPARATOR);
 				targetName = world.getName();
 				FileUtils.zipDirectory(world.getName(),
 						targetDir.concat(targetName).concat(getDate()));
 				FileUtils.deleteDirectory(new File(backupDir));
-			} catch (Exception e) {
+			} catch (FileNotFoundException e) {
+
+			}
+			catch(Exception e) {
 				plugin.log.severe("SimpleSave: Error when copying files!");
-				plugin.log
-						.severe("SimpleSave: This means a plugin you have is not acting nice, or isn't threadsafe");
-				plugin.log
-						.severe("SimpleSave: Go to my thread and post the following information");
+				plugin.log.severe("SimpleSave: This means a plugin you have is not acting nice, or isn't threadsafe");
+				plugin.log.severe("SimpleSave: Go to my thread and post the following information");
 				System.out.println(e.getMessage() + e.getCause());
 				e.printStackTrace();
 			}
 		}
 
 		plugin.getServer().getScheduler()
-				.scheduleSyncDelayedTask(plugin, new Runnable() {
-					@Override
-					public void run() {
-						if (!plugin.ConfigArray[17].equals("true")) {
-							plugin.setY(false);
-						}
-					}
-				});
+		.scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				if (!plugin.ConfigArray[17].equals("true")) {
+					plugin.setY(false);
+				}
+			}
+		});
 
 		deleteOldBackups();
 	}
