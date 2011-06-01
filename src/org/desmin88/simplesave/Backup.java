@@ -19,16 +19,12 @@ public class Backup {
 	}
 
 	public void backup() {
+		if (plugin.ConfigArray[17].equals("true"))
+			plugin.setY(true);
+		else
+			plugin.setY(false);
+		plugin.saveWorlds();
 		String[] worldfilter = plugin.ConfigArray[19].split(",");
-
-		plugin.getServer().getScheduler()
-		.scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				plugin.setY(true);
-				plugin.saveWorlds();
-			}
-		});
 		for (World world : plugin.getServer().getWorlds()) {
 			if (Arrays.asList(worldfilter).contains(world.getName())) {
 				continue;
@@ -57,16 +53,6 @@ public class Backup {
 				e.printStackTrace();
 			}
 		}
-
-		plugin.getServer().getScheduler()
-		.scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				if (!plugin.ConfigArray[17].equals("true")) {
-					plugin.setY(false);
-				}
-			}
-		});
 
 		deleteOldBackups();
 	}

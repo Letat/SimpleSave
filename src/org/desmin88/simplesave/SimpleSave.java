@@ -152,7 +152,7 @@ public class SimpleSave extends JavaPlugin {
 				this, new BackupMethod(), interval, interval);
 		return taskID;
 	}
-
+	
 	// Fixes the new setting for worldserver boolean
 	public void setY(Boolean b) {
 		for (int i = 0; i < ((CraftServer) getServer()).getHandle().server.worlds
@@ -174,7 +174,7 @@ public class SimpleSave extends JavaPlugin {
 
 		}
 	}
-
+	
 	public void saveWorlds() {
 		for (World world : getServer().getWorlds()) {
 			world.save();
