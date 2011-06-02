@@ -41,6 +41,7 @@ public class SimpleSave extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		PermissionsManager.setupPermissions(this);
 		SSplayerListener playerListener = new SSplayerListener(this,
 				getServer().getOnlinePlayers().length);
 		log = Logger.getLogger("Minecraft");
