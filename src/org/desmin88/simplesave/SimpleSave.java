@@ -95,7 +95,7 @@ public class SimpleSave extends JavaPlugin {
 			Player player = (Player) sender;
 			if (commandName.equalsIgnoreCase("ssBackup")) {
 				if (split.length == 0) {
-					if (player.isOp()) {
+					if (PermissionsManager.hasPermission(player, "simplesave.backup")) {
 						getServer().getScheduler().scheduleAsyncDelayedTask(
 								this, new BackupMethod());
 					}
